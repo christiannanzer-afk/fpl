@@ -1,0 +1,257 @@
+body {
+    background: #f0f2f5;
+    font-family: system-ui, sans-serif;
+    margin: 0;
+    padding: 20px 0;
+}
+
+.container-fluid {
+    max-width: 1600px;
+}
+
+.player-list {
+    max-height: 85vh;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.player-item {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    padding: 10px 12px;
+    margin: 6px 0;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.1);
+    transition: all .2s;
+    cursor: grab;
+    user-select: none;
+}
+
+.player-item:hover {
+    background: #e3f2fd;
+    transform: translateY(-2px);
+}
+
+.player-item.dragging {
+    opacity: 0.4;
+}
+
+.player-item.in-squad {
+    opacity: 0.35;
+    pointer-events: none;
+}
+
+.player-item img {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 12px;
+    border: 2px solid #eee;
+    pointer-events: none;
+}
+
+.player-item .name {
+    font-weight: 600;
+    font-size: .95rem;
+}
+
+.player-item .pts {
+    font-size: .8rem;
+    color: #555;
+    margin-top: 2px;
+}
+
+.player-item .pos {
+    font-weight: bold;
+    font-size: .8rem;
+    color: #007bff;
+    margin-left: auto;
+    margin-right: 8px;
+}
+
+.player-item .cost {
+    font-size: .78rem;
+    color: #666;
+}
+
+.squad-area {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.1);
+    padding: 1.5rem;
+    height: 95vh;
+    overflow-y: auto;
+}
+
+.drop-zone {
+    background: #f8f9fa;
+    border: 2px dashed #ccc;
+    border-radius: 12px;
+    min-height: 80px;
+    padding: 12px;
+    transition: all .2s;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.drop-zone.over {
+    border-color: #007bff;
+    background: #e3f2fd;
+}
+
+.zone-wrapper {
+    position: relative;
+}
+
+.zone-label {
+    position: absolute;
+    top: -12px;
+    left: 16px;
+    background: white;
+    padding: 0 8px;
+    font-weight: 600;
+    font-size: .9rem;
+    color: #333;
+}
+
+.squad-player {
+    background: #fff;
+    padding: 8px 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.1);
+    font-size: .85rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    cursor: grab;
+}
+
+.squad-player:hover {
+    background: #e3f2fd;
+}
+
+.squad-player.dragging {
+    opacity: 0.4;
+}
+
+.squad-player img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.squad-player .pos {
+    font-weight: bold;
+    color: #007bff;
+    font-size: .75rem;
+}
+
+/* Bank-spezifische Styles */
+.bench-zone {
+    min-height: 60px;
+    padding: 8px;
+    gap: 4px;
+}
+
+.bench-squad-player {
+    padding: 6px 8px;
+    font-size: .75rem;
+    gap: 6px;
+}
+
+.bench-squad-player img {
+    width: 24px;
+    height: 24px;
+}
+
+.bench-squad-player .pos {
+    font-size: .65rem;
+}
+
+.bench-squad-player div div {
+    font-size: .7rem;
+    font-weight: 600;
+}
+
+.bench-squad-player div div + div {
+    font-size: .65rem;
+    color: #666;
+}
+
+.counter {
+    font-size: .9rem;
+    font-weight: 600;
+    color: #333;
+    margin-top: 8px;
+    text-align: center;
+}
+
+.counter.valid {
+    color: #28a745;
+}
+
+.counter.invalid {
+    color: #dc3545;
+}
+
+.card {
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+#toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #333;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    opacity: 0;
+    transition: opacity .4s;
+    z-index: 9999;
+    font-size: .9rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,.3);
+}
+
+#value-display {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.value-total {
+    color: #333;
+}
+
+.value-diff {
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.value-diff.over {
+    color: #dc3545;
+}
+
+.value-diff.under {
+    color: #28a745;
+}
+
+#gw-select {
+    max-width: 150px;
+    margin: 0 auto 1rem;
+}
