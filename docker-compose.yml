@@ -1,0 +1,11 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+      - ./docker/php.ini:/usr/local/etc/php/conf.d/docker.ini:ro  # ← WICHTIG!
+    container_name: php_apache_twig
+    stdin_open: true
+    tty: true
