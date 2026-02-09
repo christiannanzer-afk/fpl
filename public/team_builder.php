@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .player-item .name {font-weight:600;font-size:.95rem;}
         .player-item .pts {font-size:.8rem;color:#555;margin-top:2px;}
         .player-item .pos {font-weight:bold;font-size:.8rem;color:#007bff;margin-left:auto;margin-right:8px;}
-        .player-item .club {font-size:.78rem;color:#666;}
+        .player-item .cost {font-size:.78rem;color:#666;}
 
         .squad-area {background:#fff;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,.1);padding:1.5rem;height:95vh;overflow-y:auto;}
         .drop-zone {background:#f8f9fa;border:2px dashed #ccc;border-radius:12px;min-height:80px;padding:12px;
@@ -146,10 +146,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                              data-photo="<?= $photo ?>"
                              data-cost="<?= ($p['now_cost'] ?? 0) / 10 ?>">
                             <img src="<?= $photo ?>" alt="" draggable="false">
-                            <div><div class="name"><?= htmlspecialchars($p['web_name']) ?></div>
-                                 <div class="pts"><?= $p['total_points'] ?> Pkt, <?= $p['now_cost']/10 ?>£</div></div>
+                            <div>
+                                <div class="name"><?= $p['web_name'] ?></div>
+                                <div class="pts"><?= $p['total_points'] ?> Pkt | <?= $club ?></div>
+                            </div>
                             <div class="pos"><?= $pos ?></div>
-                            <div class="club"><?= $club ?></div>
+                            <div class="cost"><?= ($p['now_cost'] ?? 0) / 10 ?></div>
                         </div>
                         <?php endforeach; ?>
                     </div>
@@ -157,52 +159,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
 
-        <!-- RECHTS: Squad-Area mit Row für Startelf + Bank -->
+        <!-- RECHTS: Squad Builder -->
         <div class="col-lg-9">
-            <div class="squad-area">
-                <select id="gw-select" class="form-select">
-                    <?php for($i=1; $i<=38; $i++): ?>
-                        <option value="<?= $i ?>">GW<?= $i ?></option>
-                    <?php endfor; ?>
-                </select>
-                <h4 class="mb-4 text-center">
-                    Gesamt: <span id="count-total">0</span>/15
-                </h4>
-                <div id="value-display">
-                    Value: <span id="value-total" class="value-total">0.0</span>M <span id="value-diff" class="value-diff"></span>
-                </div>
-                <div class="counter mb-4" id="status">Zieh Spieler hierher</div>
-
-                <div class="row h-100">
-                    <!-- LINKS: Startelf (vertikal, col-8) -->
-                    <div class="col-10 pe-3">
-                        <!-- Bereich 1: GK -->
-                        <div class="zone-wrapper"><div class="zone-label">GK (0/1)</div>
-                            <div id="zone-gk" class="drop-zone"></div></div>
-
-                        <!-- Bereich 2: DEF -->
-                        <div class="zone-wrapper"><div class="zone-label">DEF (0/5)</div>
-                            <div id="zone-def" class="drop-zone"></div></div>
-
-                        <!-- Bereich 3: MID -->
-                        <div class="zone-wrapper"><div class="zone-label">MID (0/5)</div>
-                            <div id="zone-mid" class="drop-zone"></div></div>
-
-                        <!-- Bereich 4: FWD -->
-                        <div class="zone-wrapper"><div class="zone-label">FWD (0/3)</div>
-                            <div id="zone-fwd" class="drop-zone"></div></div>
+            <div class="card shadow">
+                <div class="card-body">
+                    <select id="gw-select" class="form-select">
+                        <option value="0">Neues Team</option>
+                        <?php for ($i = 1; $i <= 38; $i++): ?>
+                            <option value="<?= $i ?>" <?= $i === $defaultGw ? 'selected' : '' ?>>GW <?= $i ?></option>
+                        <?php endfor; ?>
+                    </select>
+                    <div id="value-display">
+                        <span class="value-total">0.0/100.0</span>
+                        <span class="value-diff" class="value-diff"></span>
                     </div>
+                    <div class="counter mb-4" id="status">Zieh Spieler hierher</div>
 
-                    <!-- RECHTS: Bank (vertikal, col-4, kleiner) -->
-                    <div class="col-2 ps-3">
-                        <div class="d-flex flex-column h-100">
-                            <!-- Bereich 5: GK Ersatz -->
-                            <div class="zone-wrapper mb-3"><div class="zone-label">GK (0/1)</div>
-                                <div id="zone-bench-gk" class="drop-zone bench-zone"></div></div>
+                    <div class="row h-100">
+                        <!-- LINKS: Startelf (vertikal, col-8) -->
+                        <div class="col-10 pe-3">
+                            <!-- Bereich 1: GK -->
+                            <div class="zone-wrapper"><div class="zone-label">GK (0/1)</div>
+                                <div id="zone-gk" class="drop-zone"></div></div>
 
-                            <!-- Bereich 6: Feld Ersatz -->
-                            <div class="zone-wrapper flex-grow-1"><div class="zone-label">Feld (0/3)</div>
-                                <div id="zone-bench-field" class="drop-zone bench-zone"></div></div>
+                            <!-- Bereich 2: DEF -->
+                            <div class="zone-wrapper"><div class="zone-label">DEF (0/5)</div>
+                                <div id="zone-def" class="drop-zone"></div></div>
+
+                            <!-- Bereich 3: MID -->
+                            <div class="zone-wrapper"><div class="zone-label">MID (0/5)</div>
+                                <div id="zone-mid" class="drop-zone"></div></div>
+
+                            <!-- Bereich 4: FWD -->
+                            <div class="zone-wrapper"><div class="zone-label">FWD (0/3)</div>
+                                <div id="zone-fwd" class="drop-zone"></div></div>
+                        </div>
+
+                        <!-- RECHTS: Bank (vertikal, col-4, kleiner) -->
+                        <div class="col-2 ps-3">
+                            <div class="d-flex flex-column h-100">
+                                <!-- Bereich 5: GK Ersatz -->
+                                <div class="zone-wrapper mb-3"><div class="zone-label">GK (0/1)</div>
+                                    <div id="zone-bench-gk" class="drop-zone bench-zone"></div></div>
+
+                                <!-- Bereich 6: Feld Ersatz -->
+                                <div class="zone-wrapper flex-grow-1"><div class="zone-label">Feld (0/3)</div>
+                                    <div id="zone-bench-field" class="drop-zone bench-zone"></div></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -417,159 +420,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (violations.length > 0) return { valid: false, reason: violations.join('; ') };
 
-        // Simuliere Drop (inkl. Ersetzen: Wenn replaceId, subtrahiere den ersetzten Spieler)
-        const tempZoneCounts = { ...counts };
-        const tempPosCounts = { ...posCounts };
+        // Simuliere Drop (inkl. Ersetzen eines vorhandenen Spielers)
+        let tempZoneCounts = { ...counts };
+        let tempPosCounts = { ...posCounts };
+
+        // Falls wir einen Spieler ersetzen, subtrahiere ihn erst
         if (replaceId) {
-            // Finde und subtrahiere den ersetzten Spieler
             const replacedPlayer = Object.values(squad).flat().find(p => p.id == replaceId);
             if (replacedPlayer) {
-                const repKey = Object.keys(squad).find(k => squad[k].some(p => p.id == replaceId));
-                if (repKey === 'gk') { tempZoneCounts.gk--; tempPosCounts.GK--; }
-                else if (repKey === 'def') { tempZoneCounts.def--; tempPosCounts.DEF--; }
-                else if (repKey === 'mid') { tempZoneCounts.mid--; tempPosCounts.MID--; }
-                else if (repKey === 'fwd') { tempZoneCounts.fwd--; tempPosCounts.FWD--; }
-                else if (repKey === 'bench-gk') { tempZoneCounts['bench-gk']--; tempPosCounts.GK--; }
-                else if (repKey === 'bench-field') { 
-                    tempZoneCounts['bench-field']--; 
-                    if (replacedPlayer.pos === 'DEF') tempPosCounts.DEF--;
+                const replaceKey = Object.keys(squad).find(k => squad[k].some(p => p.id == replaceId));
+                if (replaceKey) {
+                    tempZoneCounts[replaceKey]--;
+                    if (replacedPlayer.pos === 'GK') tempPosCounts.GK--;
+                    else if (replacedPlayer.pos === 'DEF') tempPosCounts.DEF--;
                     else if (replacedPlayer.pos === 'MID') tempPosCounts.MID--;
                     else if (replacedPlayer.pos === 'FWD') tempPosCounts.FWD--;
                 }
             }
         }
-        // Füge neuen hinzu
-        if (key === 'gk') { tempZoneCounts.gk++; tempPosCounts.GK++; }
-        else if (key === 'def') { tempZoneCounts.def++; tempPosCounts.DEF++; }
-        else if (key === 'mid') { tempZoneCounts.mid++; tempPosCounts.MID++; }
-        else if (key === 'fwd') { tempZoneCounts.fwd++; tempPosCounts.FWD++; }
-        else if (key === 'bench-gk') { tempZoneCounts['bench-gk']++; tempPosCounts.GK++; }
-        else if (key === 'bench-field') {
-            tempZoneCounts['bench-field']++;
-            if (pos === 'DEF') tempPosCounts.DEF++;
-            else if (pos === 'MID') tempPosCounts.MID++;
-            else if (pos === 'FWD') tempPosCounts.FWD++;
-        }
 
-        // Zone-Kapazität überschritten (nach Sim)
-        const zoneMax = { gk:1, def:5, mid:5, fwd:3, 'bench-gk':1, 'bench-field':3 };
-        if (tempZoneCounts[key] > zoneMax[key]) violations.push(`Zone voll: ${key.toUpperCase()} (${tempZoneCounts[key]}/${zoneMax[key]})`);
-
-        // Startelf max 11 (für Zonen 1-4)
-        const tempStart11 = tempZoneCounts.gk + tempZoneCounts.def + tempZoneCounts.mid + tempZoneCounts.fwd;
-        if (['gk', 'def', 'mid', 'fwd'].includes(key) && tempStart11 > 11) violations.push('Startelf voll (max 11)');
-
-        // Max pro Position (global)
-        if (tempPosCounts.GK > 2) violations.push('Zu viele GK (max 2)');
-        if (tempPosCounts.DEF > 5) violations.push('Zu viele DEF (max 5)');
-        if (tempPosCounts.MID > 5) violations.push('Zu viele MID (max 5)');
-        if (tempPosCounts.FWD > 3) violations.push('Zu viele FWD (max 3)');
-
-        // Totals für Startelf-Positionen
-        if (tempZoneCounts.def + tempZoneCounts.mid > 9) violations.push('DEF + MID in Startelf >9');
-        if (tempZoneCounts.def + tempZoneCounts.fwd > 8) violations.push('DEF + FWD in Startelf >8');
-        if (tempZoneCounts.mid + tempZoneCounts.fwd > 8) violations.push('MID + FWD in Startelf >8');
-
-        // Gesamt >15
-        const total = Object.values(tempZoneCounts).reduce((a, b) => a + b, 0);
-        if (total > 15) violations.push('Team zu groß (max 15)');
-
-        // Club max 3 (aktuell +1, minus replaced falls aus gleichem Club)
-        let clubCount = Object.values(squad).flat().filter(p => p.teamId == player.teamId).length + 1;
-        if (replaceId) {
-            const replacedPlayer = Object.values(squad).flat().find(p => p.id == replaceId);
-            if (replacedPlayer && replacedPlayer.teamId == player.teamId) clubCount--;
-        }
-        if (clubCount > 3) violations.push(`Zu viele vom Club ${player.club} (max 3)`);
-
-        if (violations.length > 0) return { valid: false, reason: violations.join('; ') };
-
-        return { valid: true };
-    }
-
-    // Erweiterte Swap-Validierung mit voller Simulation (beide removes + adds)
-    function isValidSwap(dropPlayer, dropKey, targetPlayer, targetKey) {
-        // Position-Checks (einfach)
-        const targetZoneKey = targetKey; // Zielzone für dropPlayer
-        const dropZoneKey = dropKey; // Alte Zone für targetPlayer (Ziel für target)
-
-        const posViolations = [];
-        if (targetZoneKey === 'gk' && dropPlayer.pos !== 'GK') posViolations.push('Drop-Pos passt nicht zur Zielzone');
-        if (targetZoneKey === 'def' && dropPlayer.pos !== 'DEF') posViolations.push('Drop-Pos passt nicht zur Zielzone');
-        if (targetZoneKey === 'mid' && dropPlayer.pos !== 'MID') posViolations.push('Drop-Pos passt nicht zur Zielzone');
-        if (targetZoneKey === 'fwd' && dropPlayer.pos !== 'FWD') posViolations.push('Drop-Pos passt nicht zur Zielzone');
-        if (targetZoneKey === 'bench-gk' && dropPlayer.pos !== 'GK') posViolations.push('Drop-Pos passt nicht zur Zielzone');
-        if (targetZoneKey === 'bench-field' && dropPlayer.pos === 'GK') posViolations.push('Drop-Pos passt nicht zur Zielzone');
-
-        if (dropZoneKey === 'gk' && targetPlayer.pos !== 'GK') posViolations.push('Target-Pos passt nicht zur alten Zone');
-        if (dropZoneKey === 'def' && targetPlayer.pos !== 'DEF') posViolations.push('Target-Pos passt nicht zur alten Zone');
-        if (dropZoneKey === 'mid' && targetPlayer.pos !== 'MID') posViolations.push('Target-Pos passt nicht zur alten Zone');
-        if (dropZoneKey === 'fwd' && targetPlayer.pos !== 'FWD') posViolations.push('Target-Pos passt nicht zur alten Zone');
-        if (dropZoneKey === 'bench-gk' && targetPlayer.pos !== 'GK') posViolations.push('Target-Pos passt nicht zur alten Zone');
-        if (dropZoneKey === 'bench-field' && targetPlayer.pos === 'GK') posViolations.push('Target-Pos passt nicht zur alten Zone');
-
-        if (posViolations.length > 0) return { valid: false, reason: posViolations.join('; ') };
-
-        // Simuliere vollen Swap: Aktuelle Counts, subtrahiere beide, addiere umgekehrt
-        const counts = getZoneCounts();
-        const posCounts = getPosCounts();
-        const tempZoneCounts = { ...counts };
-        const tempPosCounts = { ...posCounts };
-
-        // Subtrahiere dropPlayer aus dropKey
-        if (dropKey === 'gk') { tempZoneCounts.gk--; tempPosCounts.GK--; }
-        else if (dropKey === 'def') { tempZoneCounts.def--; tempPosCounts.DEF--; }
-        else if (dropKey === 'mid') { tempZoneCounts.mid--; tempPosCounts.MID--; }
-        else if (dropKey === 'fwd') { tempZoneCounts.fwd--; tempPosCounts.FWD--; }
-        else if (dropKey === 'bench-gk') { tempZoneCounts['bench-gk']--; tempPosCounts.GK--; }
-        else if (dropKey === 'bench-field') { 
-            tempZoneCounts['bench-field']--; 
-            if (dropPlayer.pos === 'DEF') tempPosCounts.DEF--;
-            else if (dropPlayer.pos === 'MID') tempPosCounts.MID--;
-            else if (dropPlayer.pos === 'FWD') tempPosCounts.FWD--;
-        }
-
-        // Subtrahiere targetPlayer aus targetKey
-        if (targetKey === 'gk') { tempZoneCounts.gk--; tempPosCounts.GK--; }
-        else if (targetKey === 'def') { tempZoneCounts.def--; tempPosCounts.DEF--; }
-        else if (targetKey === 'mid') { tempZoneCounts.mid--; tempPosCounts.MID--; }
-        else if (targetKey === 'fwd') { tempZoneCounts.fwd--; tempPosCounts.FWD--; }
-        else if (targetKey === 'bench-gk') { tempZoneCounts['bench-gk']--; tempPosCounts.GK--; }
-        else if (targetKey === 'bench-field') { 
-            tempZoneCounts['bench-field']--; 
-            if (targetPlayer.pos === 'DEF') tempPosCounts.DEF--;
-            else if (targetPlayer.pos === 'MID') tempPosCounts.MID--;
-            else if (targetPlayer.pos === 'FWD') tempPosCounts.FWD--;
-        }
-
-        // Add dropPlayer zu targetKey
-        if (targetKey === 'gk') { tempZoneCounts.gk++; tempPosCounts.GK++; }
-        else if (targetKey === 'def') { tempZoneCounts.def++; tempPosCounts.DEF++; }
-        else if (targetKey === 'mid') { tempZoneCounts.mid++; tempPosCounts.MID++; }
-        else if (targetKey === 'fwd') { tempZoneCounts.fwd++; tempPosCounts.FWD++; }
-        else if (targetKey === 'bench-gk') { tempZoneCounts['bench-gk']++; tempPosCounts.GK++; }
-        else if (targetKey === 'bench-field') {
-            tempZoneCounts['bench-field']++;
-            if (dropPlayer.pos === 'DEF') tempPosCounts.DEF++;
-            else if (dropPlayer.pos === 'MID') tempPosCounts.MID++;
-            else if (dropPlayer.pos === 'FWD') tempPosCounts.FWD++;
-        }
-
-        // Add targetPlayer zu dropKey
-        if (dropKey === 'gk') { tempZoneCounts.gk++; tempPosCounts.GK++; }
-        else if (dropKey === 'def') { tempZoneCounts.def++; tempPosCounts.DEF++; }
-        else if (dropKey === 'mid') { tempZoneCounts.mid++; tempPosCounts.MID++; }
-        else if (dropKey === 'fwd') { tempZoneCounts.fwd++; tempPosCounts.FWD++; }
-        else if (dropKey === 'bench-gk') { tempZoneCounts['bench-gk']++; tempPosCounts.GK++; }
-        else if (dropKey === 'bench-field') {
-            tempZoneCounts['bench-field']++;
-            if (targetPlayer.pos === 'DEF') tempPosCounts.DEF++;
-            else if (targetPlayer.pos === 'MID') tempPosCounts.MID++;
-            else if (targetPlayer.pos === 'FWD') tempPosCounts.FWD++;
-        }
-
-        // Nun alle Regeln prüfen (wie in isValidDrop)
-        const violations = [];
+        // Addiere neuen Spieler
+        tempZoneCounts[key]++;
+        if (pos === 'GK') tempPosCounts.GK++;
+        else if (pos === 'DEF') tempPosCounts.DEF++;
+        else if (pos === 'MID') tempPosCounts.MID++;
+        else if (pos === 'FWD') tempPosCounts.FWD++;
 
         // Zone-Kapazitäten
         const zoneMax = { gk:1, def:5, mid:5, fwd:3, 'bench-gk':1, 'bench-field':3 };
@@ -599,8 +474,69 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         const total = Object.values(tempZoneCounts).reduce((a, b) => a + b, 0);
         if (total > 15) violations.push('Team zu groß (max 15)');
 
-        // Club max 3 (für dropPlayer; target ist schon im Team, aber da wir swap, bleibt gleich)
-        let clubCountDrop = Object.values(squad).flat().filter(p => p.teamId == dropPlayer.teamId).length; // +1 -1 = gleich
+        // Club max 3
+        const allSquadPlayers = Object.values(squad).flat();
+        let testSquad = replaceId ? allSquadPlayers.filter(p => p.id != replaceId) : [...allSquadPlayers];
+        testSquad.push(player);
+        const clubCount = testSquad.filter(p => p.teamId == player.teamId).length;
+        if (clubCount > 3) violations.push(`Zu viele vom Club ${player.club} (max 3)`);
+
+        if (violations.length > 0) return { valid: false, reason: violations.join('; ') };
+
+        return { valid: true };
+    }
+
+    function isValidSwap(dropPlayer, dropKey, targetPlayer, targetKey) {
+        // Position-Checks (einfach)
+        const targetZoneKey = targetKey; // Zielzone für dropPlayer
+        const dropZoneKey = dropKey; // Alte Zone für targetPlayer (Ziel für target)
+
+        const posViolations = [];
+        if (targetZoneKey === 'gk' && dropPlayer.pos !== 'GK') posViolations.push('Drop-Pos passt nicht zur Zielzone');
+        if (targetZoneKey === 'def' && dropPlayer.pos !== 'DEF') posViolations.push('Drop-Pos passt nicht zur Zielzone');
+        if (targetZoneKey === 'mid' && dropPlayer.pos !== 'MID') posViolations.push('Drop-Pos passt nicht zur Zielzone');
+        if (targetZoneKey === 'fwd' && dropPlayer.pos !== 'FWD') posViolations.push('Drop-Pos passt nicht zur Zielzone');
+        if (targetZoneKey === 'bench-gk' && dropPlayer.pos !== 'GK') posViolations.push('Drop-Pos passt nicht zur Zielzone');
+        if (targetZoneKey === 'bench-field' && dropPlayer.pos === 'GK') posViolations.push('Drop-Pos passt nicht zur Zielzone');
+
+        if (dropZoneKey === 'gk' && targetPlayer.pos !== 'GK') posViolations.push('Target-Pos passt nicht zur alten Zone');
+        if (dropZoneKey === 'def' && targetPlayer.pos !== 'DEF') posViolations.push('Target-Pos passt nicht zur alten Zone');
+        if (dropZoneKey === 'mid' && targetPlayer.pos !== 'MID') posViolations.push('Target-Pos passt nicht zur alten Zone');
+        if (dropZoneKey === 'fwd' && targetPlayer.pos !== 'FWD') posViolations.push('Target-Pos passt nicht zur alten Zone');
+        if (dropZoneKey === 'bench-gk' && targetPlayer.pos !== 'GK') posViolations.push('Target-Pos passt nicht zur alten Zone');
+        if (dropZoneKey === 'bench-field' && targetPlayer.pos === 'GK') posViolations.push('Target-Pos passt nicht zur alten Zone');
+
+        if (posViolations.length > 0) return { valid: false, reason: posViolations.join('; ') };
+
+        const counts = getZoneCounts();
+        const posCounts = getPosCounts();
+        const violations = [];
+
+        // Simuliere vollen Swap: Aktuelle Counts, subtrahiere beide, addiere umgekehrt
+        let tempZoneCounts = { ...counts };
+        let tempPosCounts = { ...posCounts };
+
+        // Entferne beide Spieler aus ihren alten Zonen (Counts bleiben gleich für Swap)
+        // Keine Änderung nötig, da wir 1:1 tauschen
+
+        // Überprüfe finale Regeln (die meisten bleiben gleich)
+        const tempStart11 = tempZoneCounts.gk + tempZoneCounts.def + tempZoneCounts.mid + tempZoneCounts.fwd;
+        if (tempStart11 > 11) violations.push('Startelf voll (max 11)');
+
+        if (tempPosCounts.GK > 2) violations.push('Zu viele GK (max 2)');
+        if (tempPosCounts.DEF > 5) violations.push('Zu viele DEF (max 5)');
+        if (tempPosCounts.MID > 5) violations.push('Zu viele MID (max 5)');
+        if (tempPosCounts.FWD > 3) violations.push('Zu viele FWD (max 3)');
+
+        if (tempZoneCounts.def + tempZoneCounts.mid > 9) violations.push('Start DEF+MID >9');
+        if (tempZoneCounts.def + tempZoneCounts.fwd > 8) violations.push('Start DEF+FWD >8');
+        if (tempZoneCounts.mid + tempZoneCounts.fwd > 8) violations.push('Start MID+FWD >8');
+
+        const total = Object.values(tempZoneCounts).reduce((a, b) => a + b, 0);
+        if (total > 15) violations.push('Team zu groß (max 15)');
+
+        // Club counts bleiben gleich bei Swap
+        let clubCountDrop = Object.values(squad).flat().filter(p => p.teamId == dropPlayer.teamId).length;
         let clubCountTarget = Object.values(squad).flat().filter(p => p.teamId == targetPlayer.teamId).length;
         if (clubCountDrop > 3) violations.push(`Zu viele vom Club ${dropPlayer.club} (max 3)`);
         if (clubCountTarget > 3) violations.push(`Zu viele vom Club ${targetPlayer.club} (max 3)`);
@@ -723,52 +659,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         const posCounts = getPosCounts();
         const total = Object.values(counts).reduce((a, b) => a + b, 0);
 
-        document.getElementById('count-total').textContent = total;
-
         // Value-Anzeige updaten
-        const valueTotalEl = document.getElementById('value-total');
-        const valueDiffEl = document.getElementById('value-diff');
-        valueTotalEl.textContent = squadTotalCost.toFixed(1);
+        const valueTotalEl = document.querySelector('.value-total');
+        const valueDiffEl = document.querySelector('.value-diff');
+        if (valueTotalEl) valueTotalEl.textContent = `${squadTotalCost.toFixed(1)}/100.0`;
+        
         const diff = squadTotalCost - 100;
-        if (diff > 0) {
-            // Über: Rot, negativ
-            valueDiffEl.textContent = `-${diff.toFixed(1)}`;
-            valueDiffEl.className = 'value-diff over';
-        } else if (diff < 0) {
-            // Unter: Grün, positiv
-            valueDiffEl.textContent = `+${Math.abs(diff).toFixed(1)}`;
-            valueDiffEl.className = 'value-diff under';
-        } else {
-            valueDiffEl.textContent = '';
-            valueDiffEl.className = 'value-diff';
+        if (valueDiffEl) {
+            valueDiffEl.textContent = diff > 0 ? `+${diff.toFixed(1)}` : diff < 0 ? diff.toFixed(1) : '';
+            valueDiffEl.className = 'value-diff ' + (diff > 0 ? 'over' : diff < 0 ? 'under' : '');
         }
 
-        // Labels updaten
-        const labels = {
-            'zone-gk': 'GK',
-            'zone-def': 'DEF',
-            'zone-mid': 'MID',
-            'zone-fwd': 'FWD',
-            'zone-bench-gk': 'GK',
-            'zone-bench-field': 'Feld'
-        };
-        Object.entries(labels).forEach(([zoneId, label]) => {
-            const labelEl = document.querySelector(`#${zoneId}`).previousElementSibling;
-            if (labelEl) {
-                const cur = counts[getZoneKey(zoneId)];
-                const max = { gk:1, def:5, mid:5, fwd:3, 'bench-gk':1, 'bench-field':3 }[getZoneKey(zoneId)];
-                labelEl.textContent = `${label} (${cur}/${max})`;
-            }
-        });
+        // Zone-Labels updaten
+        document.querySelectorAll('.zone-wrapper').forEach(wrapper => {
+            const label = wrapper.querySelector('.zone-label');
+            const zone = wrapper.querySelector('.drop-zone');
+            if (!label || !zone) return;
 
-        // Drop-Zone Farben (rot nur bei tatsächlicher Überfüllung > max oder Startelf >11)
-        document.querySelectorAll('.drop-zone').forEach(zone => {
             const key = getZoneKey(zone.id);
-            const cur = counts[key];
-            const max = {gk:1, def:5, mid:5, fwd:3, 'bench-gk':1, 'bench-field':3}[key];
-            const start11 = counts.gk + counts.def + counts.mid + counts.fwd;
-            const overfull = cur > max || (['gk','def','mid','fwd'].includes(key) && start11 > 11);
-            zone.style.borderColor = overfull ? '#dc3545' : '#28a745';
+            const count = counts[key] || 0;
+            const zoneMax = { gk:1, def:5, mid:5, fwd:3, 'bench-gk':1, 'bench-field':3 };
+            const max = zoneMax[key];
+            const posName = { gk:'GK', def:'DEF', mid:'MID', fwd:'FWD', 'bench-gk':'GK', 'bench-field':'Feld' }[key];
+
+            label.textContent = `${posName} (${count}/${max})`;
+            const overfull = count > max;
+            label.style.color = overfull ? '#dc3545' : '#28a745';
             zone.style.background = overfull ? '#ffebee' : '#d4edda';
         });
 
@@ -793,7 +709,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (counts['bench-field'] !== 3) violations.push(`Ersatz Feld: ${counts['bench-field']}/3`);
         if (counts.gk !== 1) violations.push(`Start-GK: Muss genau 1 sein (aktuell ${counts.gk})`);
         if (counts.def < 3 || counts.def > 5) violations.push(`Start-DEF: ${counts.def} (3-5)`);
-        if (counts.mid < 2 || counts.mid > 5) violations.push(`Start-MID: ${counts.mid} (2–5)`);
+        if (counts.mid < 2 || counts.mid > 5) violations.push(`Start-MID: ${counts.mid} (2-5)`);
         if (counts.fwd < 1 || counts.fwd > 3) violations.push(`Start-FWD: ${counts.fwd} (1-3)`);
         if (counts.gk + counts.def + counts.mid + counts.fwd !== 11) violations.push(`Startelf: ${counts.gk + counts.def + counts.mid + counts.fwd}/11`);
         if (counts.def + counts.mid > 9) violations.push('Start DEF+MID >9');
@@ -809,7 +725,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Speichern, wenn neu valid
         if (valid && !wasValid) {
             const gw = document.getElementById('gw-select').value;
-            saveTeam(gw);
+            if (gw > 0) saveTeam(gw);
         }
         wasValid = valid;
     }
@@ -925,22 +841,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         document.querySelectorAll('.player-item').forEach(it => {
             const n = it.dataset.name.toLowerCase();
             const c = it.dataset.club.toLowerCase();
-            it.style.display = (n.includes(q) || c.includes(q)) ? 'flex' : 'none';
+            it.style.display = (n.includes(q) || c.includes(q)) ? '' : 'none';
         });
     });
 
-    // GW-Select Event
+    // GW-Select
     document.getElementById('gw-select').addEventListener('change', e => {
-        const gw = e.target.value;
-        clearSquad();
-        loadTeamFromServer(gw);
+        const gw = parseInt(e.target.value);
+        if (gw === 0) {
+            clearSquad();
+        } else {
+            loadTeamFromServer(gw);
+        }
     });
 
-    // START: Lade Team
-    window.addEventListener('load', () => {
-        document.getElementById('gw-select').value = defaultGw;
+    // Initial: Lade default GW
+    if (defaultGw > 0) {
         loadTeamFromServer(defaultGw);
-    });
+    }
 </script>
 </body>
 </html>

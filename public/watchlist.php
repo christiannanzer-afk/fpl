@@ -9,7 +9,7 @@ return [
     666,        // Gyökeres (FWD, 75 pts, £8.7)
 
     // Aston Villa
-    32,        // Martinez (GK, 83 pts, £5.0)
+    32,        // Martinez (GK, 84 pts, £5.0)
     36,        // Cash (DEF, 99 pts, £4.9)
     47,        // Rogers (MID, 123 pts, £7.6)
     64,        // Watkins (FWD, 93 pts, £8.7)
@@ -33,10 +33,10 @@ return [
     136,        // Thiago (FWD, 131 pts, £7.0)
 
     // Brighton
-    139,        // Verbruggen (GK, 74 pts, £4.5)
+    139,        // Verbruggen (GK, 77 pts, £4.5)
     151,        // Van Hecke (DEF, 87 pts, £4.5)
-    166,        // Ayari (MID, 83 pts, £4.8)
-    178,        // Welbeck (FWD, 70 pts, £6.2)
+    160,        // Minteh (MID, 83 pts, £5.7)
+    178,        // Welbeck (FWD, 71 pts, £6.2)
 
     // Chelsea
     220,        // Sánchez (GK, 92 pts, £4.9)
@@ -45,9 +45,9 @@ return [
     249,        // João Pedro (FWD, 122 pts, £7.6)
 
     // Crystal Palace
-    253,        // Henderson (GK, 84 pts, £5.0)
-    257,        // Lacroix (DEF, 102 pts, £5.1)
-    273,        // Wharton (MID, 66 pts, £5.0)
+    253,        // Henderson (GK, 92 pts, £5.0)
+    257,        // Lacroix (DEF, 113 pts, £5.1)
+    267,        // Sarr (MID, 69 pts, £6.3)
     283,        // Mateta (FWD, 84 pts, £7.5)
 
     // Everton
@@ -69,16 +69,16 @@ return [
     691,        // Calvert-Lewin (FWD, 102 pts, £5.9)
 
     // Liverpool
-    366,        // A.Becker (GK, 67 pts, £5.4)
+    366,        // A.Becker (GK, 68 pts, £5.4)
     373,        // Virgil (DEF, 94 pts, £5.9)
-    390,        // Gravenberch (MID, 101 pts, £5.6)
-    661,        // Ekitiké (FWD, 100 pts, £8.9)
+    390,        // Gravenberch (MID, 106 pts, £5.6)
+    661,        // Ekitiké (FWD, 102 pts, £8.9)
 
     // Man City
-    736,        // Donnarumma (GK, 81 pts, £5.6)
-    260,        // Guéhi (DEF, 114 pts, £5.2)
-    82,        // Semenyo (MID, 137 pts, £7.9)
-    430,        // Haaland (FWD, 171 pts, £14.9)
+    736,        // Donnarumma (GK, 84 pts, £5.6)
+    260,        // Guéhi (DEF, 117 pts, £5.2)
+    82,        // Semenyo (MID, 139 pts, £7.9)
+    430,        // Haaland (FWD, 182 pts, £14.9)
 
     // Man Utd
     733,        // Lammens (GK, 57 pts, £5.0)
@@ -112,7 +112,7 @@ return [
 
     // West Ham
     600,        // Areola (GK, 51 pts, £4.3)
-    603,        // Diouf (DEF, 56 pts, £4.0)
+    603,        // Diouf (DEF, 55 pts, £4.0)
     708,        // M.Fernandes (MID, 92 pts, £5.5)
     624,        // Bowen (FWD, 115 pts, £7.7)
 
